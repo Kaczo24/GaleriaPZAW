@@ -1,0 +1,51 @@
+@startuml
+object Pictures{
+PictureId : int(11)
+__
+Name : varchar(64)
+CreationDate : date
+AlbumId : int(11)
+Resolution : varchar(16)
+Size : int(11)
+Extension : varchar(16)
+CameraInfo : text
+}
+object Albums{
+AlbumId : int(11)
+__
+Name : varchar(64)
+CreationDate : date
+}
+object Comments{
+CommentId : int(11)
+__
+Author : varchar(64)
+Content : text
+CreateDate : date
+PictureId : int(11)
+}
+object Replys{
+ReplyId : int(11)
+__
+Author : varchar(64)
+Content : text
+CreateDate : date
+CommentId : int(11)
+}
+object Tags{
+TagId : int(11)
+__
+Name : varchar(64)
+}
+object TagPicture{
+TagId : int(11)
+PictureId : int(11)
+}
+
+
+Albums -- Pictures
+Pictures -- TagPicture
+TagPicture -- Tags
+Pictures -- Comments
+Replys -- Comments
+@enduml

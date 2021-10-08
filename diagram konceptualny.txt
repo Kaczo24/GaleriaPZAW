@@ -1,0 +1,13 @@
+@startuml
+object Pictures
+object Albums
+object Comments
+object Replys
+object Tags
+
+
+Albums ||--o{ Pictures
+Pictures }|--o{ Tags
+Pictures ||--o{ Comments
+Replys }o--|| Comments
+@enduml

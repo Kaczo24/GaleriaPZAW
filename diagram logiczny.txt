@@ -1,0 +1,46 @@
+@startuml
+object Pictures{
+PictureId : number
+__
+Name : text
+CreationDate : date
+AlbumId : number
+Resolution : text
+Size : number
+Extension : text
+CameraInfo : text
+}
+object Albums{
+AlbumId : number
+__
+Name :  text
+CreationDate : date
+}
+object Comments{
+CommentId : number
+__
+Author : text
+Content : text
+CreateDate : date
+PictureId : number
+}
+object Replys{
+ReplyId : number
+__
+Author : text
+Content : text
+CreateDate : date
+CommentId : number
+}
+object Tags{
+TagId : number
+__
+Name : text
+}
+
+
+Albums ||--o{ Pictures
+Pictures }|--o{ Tags
+Pictures ||--o{ Comments
+Replys }o--|| Comments
+@enduml
