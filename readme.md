@@ -1,4 +1,5 @@
-### Członkowie grupy (3c):
+## Sufi
+### Członkowie (3c):
 - Mateusz Kaczkowski
 - Julia Waszkiewicz
 - Bastian Wierzchnicki
