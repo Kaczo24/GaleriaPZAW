@@ -4,3 +4,4 @@
 - Bastian Wierzchnicki
 - Maksymilian Gaszewski 
 - Aleks Zych
+- Bejamin Szawracki
