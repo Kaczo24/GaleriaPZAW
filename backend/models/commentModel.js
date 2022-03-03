@@ -1,6 +1,6 @@
 let mysql = require('mysql');
 
-exports.query = (cb, query = "1", limit, page = 0) => {
+exports.query = (cb, query = "1") => {
     let con = mysql.createConnection({
         host: "localhost",
         user: "root",
@@ -9,14 +9,14 @@ exports.query = (cb, query = "1", limit, page = 0) => {
     });
 
     con.connect((err) => {
-        con.query("SELECT * FROM `albums` WHERE" + query + limit?` LIMIT ${limit} OFSET ${limit * page}`:"", (error, result) => {
+        con.query("SELECT * FROM `comments` WHERE" + query, (error, result) => {
             cb(result);
         })
     })
 
 }
 
-exports.create = (cb, name, creationDate) => {
+exports.create = (cb, author, content, date, pictureID) => {
     let con = mysql.createConnection({
         host: "localhost",
         user: "root",
@@ -25,14 +25,14 @@ exports.create = (cb, name, creationDate) => {
     });
 
     con.connect((err) => {
-        con.query("INSERT INTO `albums`(`AlbumID`, `Name`, `CreationDate`) VALUES (null, '"+name+"', '"+new Date(creationDate).toISOString().substr(0,10)+"')", (error, result) => {
+        con.query("INSERT INTO `comments`(`CommentID`, `Author`, `Content`, `CreateDate`, `PictureID`) VALUES (null,'"+author+"','"+content+"','"+new Date(date).toISOString().substr(0,10)+"',"+pictureID+")", (error, result) => {
             cb(result);
         })
     })
 
 }
 
-exports.update = (cb, name, date, id) => {
+exports.update = (cb, author, content, date, pictureId, id) => {
     let con = mysql.createConnection({
         host: "localhost",
         user: "root",
@@ -41,7 +41,7 @@ exports.update = (cb, name, date, id) => {
     });
 
     con.connect((err) => {
-        con.query("UPDATE `albums` SET `Name`='"+name+"', `CreationDate`='"+new Date(date).toISOString().substr(0,10)+"' WHERE `AlbumID` = " + id, (error, result) => {
+        con.query("UPDATE `comments` SET `Author`='"+author+"',`Content`='"+content+"',`CreateDate`='"+new Date(date).toISOString().substr(0,10)+"',`PictureID`='"+pictureId+"' WHERE `CommentID` = " + id, (error, result) => {
             cb(result);
         })
     })
@@ -57,7 +57,7 @@ exports.delete = (cb, id) => {
     });
 
     con.connect((err) => {
-        con.query("DELETE FROM `albums` WHERE `AlbumID` = " + id, (error, result) => {
+        con.query("DELETE FROM `comments` WHERE `CommentID` = " + id, (error, result) => {
             cb(result);
         })
     })

@@ -1,6 +1,6 @@
 let mysql = require('mysql');
 
-exports.query = (cb, query = "1", limit, page = 0) => {
+exports.query = (cb, query = "1") => {
     let con = mysql.createConnection({
         host: "localhost",
         user: "root",
@@ -9,7 +9,7 @@ exports.query = (cb, query = "1", limit, page = 0) => {
     });
 
     con.connect((err) => {
-        con.query("SELECT * FROM `albums` WHERE" + query + limit?` LIMIT ${limit} OFSET ${limit * page}`:"", (error, result) => {
+        con.query("SELECT * FROM `albums` WHERE" + query, (error, result) => {
             cb(result);
         })
     })
@@ -25,14 +25,14 @@ exports.create = (cb, name, creationDate) => {
     });
 
     con.connect((err) => {
-        con.query("INSERT INTO `albums`(`AlbumID`, `Name`, `CreationDate`) VALUES (null, '"+name+"', '"+new Date(creationDate).toISOString().substr(0,10)+"')", (error, result) => {
+        con.query("INSERT INTO `albums`(`AlbumID`, `Name`, `CreationDate`) VALUES (null, '"+name+"', '"+new Date(creationDate).toISOString().substr(0,10)+"'+)", (error, result) => {
             cb(result);
         })
     })
 
 }
 
-exports.update = (cb, name, date, id) => {
+exports.update = (cb, name, id) => {
     let con = mysql.createConnection({
         host: "localhost",
         user: "root",
@@ -41,7 +41,7 @@ exports.update = (cb, name, date, id) => {
     });
 
     con.connect((err) => {
-        con.query("UPDATE `albums` SET `Name`='"+name+"', `CreationDate`='"+new Date(date).toISOString().substr(0,10)+"' WHERE `AlbumID` = " + id, (error, result) => {
+        con.query("UPDATE `albums` SET `Name`='"+name+"' WHERE `AlbumID` = " + id, (error, result) => {
             cb(result);
         })
     })
