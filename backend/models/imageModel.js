@@ -1,6 +1,6 @@
 let mysql = require('mysql');
 
-exports.query = (cb, query = "1") => {
+exports.query = (cb, query = "1", limit, page = 0) => {
     let con = mysql.createConnection({
         host: "localhost",
         user: "root",
@@ -9,14 +9,14 @@ exports.query = (cb, query = "1") => {
     });
 
     con.connect((err) => {
-        con.query("SELECT * FROM `albums` WHERE" + query, (error, result) => {
+        con.query("SELECT * FROM `pictures` WHERE" + query + limit?` LIMIT ${limit} OFSET ${limit * page}`:"", (error, result) => {
             cb(result);
         })
     })
 
 }
 
-exports.create = (cb, name, creationDate) => {
+exports.create = (cb, name, creationDate, albumId, resolution, size, extension, cameraInfo) => {
     let con = mysql.createConnection({
         host: "localhost",
         user: "root",
@@ -25,14 +25,14 @@ exports.create = (cb, name, creationDate) => {
     });
 
     con.connect((err) => {
-        con.query("INSERT INTO `albums`(`AlbumID`, `Name`, `CreationDate`) VALUES (null, '"+name+"', '"+new Date(creationDate).toISOString().substr(0,10)+"'+)", (error, result) => {
+        con.query("INSERT INTO `pictures`(`PictureID`, `Name`, `CreationDate`, `AlbumID`, `Resolution`, `Size`, `Extention`, `CameraInfo`) VALUES ('','"+ name +"','"+ new Date(creationDate).toISOString().substr(0,10) +"',"+ albumId +",'"+ resolution +"',"+ size +",'"+ extension +"','" + cameraInfo + "')", (error, result) => {
             cb(result);
         })
     })
 
 }
 
-exports.update = (cb, name, id) => {
+exports.update = (cb, name, creationDate, albumId, resolution, size, extension, cameraInfo) => {
     let con = mysql.createConnection({
         host: "localhost",
         user: "root",
@@ -41,7 +41,7 @@ exports.update = (cb, name, id) => {
     });
 
     con.connect((err) => {
-        con.query("UPDATE `albums` SET `Name`='"+name+"' WHERE `AlbumID` = " + id, (error, result) => {
+        con.query("UPDATE `pictures` SET `Name`='" + name + "',`CreationDate`='"+ new Date(creationDate).toISOString().substr(0,10) +"',`AlbumID`="+ albumId +",`Resolution`='"+ resolution +"',`Size`="+ size +",`Extention`='"+ extension +"',`CameraInfo`='" + cameraInfo + "' WHERE `PictureID` =" + id, (error, result) => {
             cb(result);
         })
     })
@@ -57,7 +57,7 @@ exports.delete = (cb, id) => {
     });
 
     con.connect((err) => {
-        con.query("DELETE FROM `albums` WHERE `AlbumID` = " + id, (error, result) => {
+        con.query("DELETE FROM `pictures` WHERE `PictureID` = " + id, (error, result) => {
             cb(result);
         })
     })

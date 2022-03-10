@@ -10,13 +10,13 @@ exports.getById = (req, res, next) => {
 exports.createComment = (req, res, next) => {
     model.create(() => {
         res.json({result: "OK"});
-    }, req.body.Author, req.body.CreateDate, req.body.Content, req.body.PictureId)
+    }, req.body.Author, req.body.CreationDate, req.body.Content, req.body.PictureId)
 }
 
 exports.updateComment = (req, res, next) => {
     model.update((out) => {
         res.json(out);
-    }, req.body.content, req.params.ID)
+    }, req.body.Author, req.body.CreationDate, req.body.Content, req.body.PictureId, req.params.ID)
 }
 
 exports.deleteComment = (req, res, next) => {

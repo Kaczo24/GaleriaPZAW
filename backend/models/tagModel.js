@@ -1,11 +1,9 @@
-let seq = require('sequelize');
-
-let Album = seq.define("album", {
-    
-})
+let mysql = require('sequelize');
 
 
-exports.query = (cb, query = "1", limit, page = 0) => {
+
+
+exports.query = (cb, id) => {
     let con = mysql.createConnection({
         host: "localhost",
         user: "root",
@@ -14,14 +12,14 @@ exports.query = (cb, query = "1", limit, page = 0) => {
     });
 
     con.connect((err) => {
-        con.query("SELECT * FROM `albums` WHERE" + query + limit?` LIMIT ${limit} OFSET ${limit * page}`:"", (error, result) => {
-            cb(result);
+        con.query("SELECT tags.Name AS 'x' FROM `tags`, `tag-picture` WHERE tags.TagID = `tag-picture`.`TagID` AND `tag-picture`.`PictureID` = " + id, (error, result) => {
+            cb(result.map(x => x.x));
         })
     })
 
 }
 
-exports.create = (cb, name, creationDate) => {
+exports.create = (cb, tags, id) => {
     let con = mysql.createConnection({
         host: "localhost",
         user: "root",
@@ -30,9 +28,18 @@ exports.create = (cb, name, creationDate) => {
     });
 
     con.connect((err) => {
-        con.query("INSERT INTO `albums`(`AlbumID`, `Name`, `CreationDate`) VALUES (null, '"+name+"', '"+new Date(creationDate).toISOString().substr(0,10)+"')", (error, result) => {
-            cb(result);
-        })
+        for(let tag of tags) {
+            con.query("SELECT `TagID` FROM `tags` WHERE `Name` = " + tag, (error, result) => {
+                if(!result.length)
+                    con.query("INSERT INTO `tags`(`TagID`, `Name`) VALUES (null,'"+tag+"')", (error, output) => {
+                        con.query("INSERT INTO `tags`(`TagID`, `Name`) VALUES (null,'"+tag+"')", (error, output) => {
+                        
+                            cb(result);
+                        })
+                        cb(result);
+                    })
+            })
+        }
     })
 
 }
@@ -62,7 +69,7 @@ exports.delete = (cb, id) => {
     });
 
     con.connect((err) => {
-        con.query("DELETE FROM `albums` WHERE `AlbumID` = " + id, (error, result) => {
+        con.query("DELETE FROM `tag-picture` WHERE `PictureID` = " + id, (error, result) => {
             cb(result);
         })
     })

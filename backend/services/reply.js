@@ -10,13 +10,13 @@ exports.getById = (req, res, next) => {
 exports.createReply = (req, res, next) => {
     model.create(() => {
         res.json({result: "OK"});
-    }, req.body.Author, req.body.CreateDate, req.body.Content, req.body.CommentId)
+    }, req.body.Author, req.body.CreationDate, req.body.Content, req.body.CommentId)
 }
 
 exports.updateReply = (req, res, next) => {
     model.update((out) => {
         res.json(out);
-    }, req.body.content, req.params.ID)
+    }, req.body.Author, req.body.CreationDate, req.body.Content, req.body.CommentId, req.params.ID)
 }
 
 exports.deleteReply = (req, res, next) => {

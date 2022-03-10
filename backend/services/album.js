@@ -1,16 +1,23 @@
 var express = require('express');
 var model = require("../models/albumModel");
+var imageModel = require("../models/imageModel");
 
 exports.getAll = (req, res, next) => {
     model.query((out) => {
         res.json(out);
-    }, req.query.size, req.query.page)
+    }, "", req.query.size, req.query.page)
 }
 
 exports.getById = (req, res, next) => {
     model.query((out) => {
         res.json(out);
     }, "`AlbumID` = " + req.params.ID)
+}
+
+exports.getImages = (req, res, next) => {
+    imageModel.query((out) => {
+        res.json(out);
+    }, "AlbumId = " + req.params.ID, req.query.size, req.query.page)
 }
 
 exports.createAlbum = (req, res, next) => {

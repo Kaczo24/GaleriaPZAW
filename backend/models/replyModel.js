@@ -1,6 +1,6 @@
 let mysql = require('mysql');
 
-exports.query = (cb, query = "1") => {
+exports.query = (cb, query = "1", limit, page = 0) => {
     let con = mysql.createConnection({
         host: "localhost",
         user: "root",
@@ -9,7 +9,7 @@ exports.query = (cb, query = "1") => {
     });
 
     con.connect((err) => {
-        con.query("SELECT * FROM `replies` WHERE" + query, (error, result) => {
+        con.query("SELECT * FROM `replies` WHERE" + query + limit?` LIMIT ${limit} OFSET ${limit * page}`:"", (error, result) => {
             cb(result);
         })
     })
