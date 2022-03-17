@@ -7,37 +7,49 @@ const sequelize = new Sequelize('pzaw', 'root', '', {
 var model = require("../models/init-models")(sequelize);
 
 exports.getAll = (req, res, next) => {
-    model.query((out) => {
-        res.json(out);
-    }, "", req.query.size, req.query.page)
+    model.albums.findAll({limit: req.query.size, offset: req.query.offset}).then(succ => {
+        res.json(succ);
+    }).catch(err=>{
+        res.status(422).json({"error":err});
+    })
 }
 
 exports.getById = (req, res, next) => {
-    model.query((out) => {
-        res.json(out);
-    }, "`AlbumID` = " + req.params.ID)
+    model.albums.findOne({ where: { AlbumID: req.params.ID } }).then(succ => {
+        res.json(succ);
+    }).catch(err=>{
+        res.status(422).json({"error":err});
+    })
 }
 
 exports.getImages = (req, res, next) => {
-    imageModel.query((out) => {
-        res.json(out);
-    }, "AlbumId = " + req.params.ID, req.query.size, req.query.page)
+    model.pictures.findAll({ where: {AlbumId: req.params.ID}, limit: req.query.size, offset: req.query.offset}).then(succ => {
+        res.json(succ);
+    }).catch(err=>{
+        res.status(422).json({"error":err});
+    })
 }
 
 exports.createAlbum = (req, res, next) => {
-    model.create(() => {
-        res.json({result: "OK"});
-    }, req.body.Name, req.body.CreationDate)
+    model.albums.create({Name: req.body.Name, CreationDate: req.body.CreationDate}).then(succ => {
+        res.json(succ);
+    }).catch(err=>{
+        res.status(422).json({"error": err});
+    })
 }
 
 exports.updateAlbum = (req, res, next) => {
-    model.update((out) => {
-        res.json(out);
-    }, req.body.Name, req.body.CreationDate, req.params.ID)
+    model.albums.update({Name: req.body.Name, CreationDate: req.body.CreationDate}, { where: { AlbumID: req.params.ID } }).then(succ => {
+        res.json(succ);
+    }).catch(err=>{
+        res.status(422).json({"error": err});
+    })
 }
 
 exports.deleteAlbum = (req, res, next) => {
-    model.delete((out) => {
-        res.json(out);
-    }, req.params.ID)
+    model.albums.destroy({ where: { AlbumID: req.params.ID } }).then(succ => {
+        res.json(succ);
+    }).catch(err=>{
+        res.status(422).json({"error": err});
+    })
 }
