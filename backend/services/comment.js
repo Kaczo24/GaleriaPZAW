@@ -1,5 +1,10 @@
 var express = require('express');
-var model = require("../models/commentModel");
+const { Sequelize } = require('sequelize');
+const sequelize = new Sequelize('pzaw', 'root', '', {
+    host: 'localhost',
+    dialect: 'mariadb'
+});
+var model = require("../models/init-models")(sequelize);
 
 exports.getById = (req, res, next) => {
     model.query((out) => {

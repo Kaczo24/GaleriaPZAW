@@ -1,6 +1,10 @@
 var express = require('express');
-var model = require("../models/albumModel");
-var imageModel = require("../models/imageModel");
+const { Sequelize } = require('sequelize');
+const sequelize = new Sequelize('pzaw', 'root', '', {
+    host: 'localhost',
+    dialect: 'mariadb'
+});
+var model = require("../models/init-models")(sequelize);
 
 exports.getAll = (req, res, next) => {
     model.query((out) => {
