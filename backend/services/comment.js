@@ -7,25 +7,32 @@ const sequelize = new Sequelize('pzaw', 'root', '', {
 var model = require("../models/init-models")(sequelize);
 
 exports.getById = (req, res, next) => {
-    model.query((out) => {
-        res.json(out);
-    }, "`CommentsID` = " + req.params.ID)
+    model.comments.findByPk(req.params.ID).then(succ => {
+        res.json(succ);
+    }).catch(err=>{
+        res.status(422).json({"error":err});
+    })
 }
 
 exports.createComment = (req, res, next) => {
-    model.create(() => {
-        res.json({result: "OK"});
-    }, req.body.Author, req.body.CreationDate, req.body.Content, req.body.PictureId)
+    model.comments.create({Author: req.body.Author, CreateDate: req.body.CreationDate, Content: req.body.Content, PictureID: req.body.PictureId}).then(succ => {
+        res.json(succ);
+    }).catch(err=>{
+        res.status(422).json({"error": err});
+    })
 }
 
 exports.updateComment = (req, res, next) => {
-    model.update((out) => {
-        res.json(out);
-    }, req.body.Author, req.body.CreationDate, req.body.Content, req.body.PictureId, req.params.ID)
-}
+    model.comments.update({Author: req.body.Author, CreateDate: req.body.CreationDate, Content: req.body.Content, PictureID: req.body.PictureId}, { where: { CommentID: req.params.ID } }).then(succ => {
+        res.json(succ);
+    }).catch(err=>{
+        res.status(422).json({"error": err});
+    })}
 
 exports.deleteComment = (req, res, next) => {
-    model.delete((out) => {
-        res.json(out);
-    }, req.params.ID)
+    model.comments.destroy({ where: { CommentID: req.params.ID } }).then(succ => {
+        res.json(succ);
+    }).catch(err=>{
+        res.status(422).json({"error": err});
+    })
 }
