@@ -1,10 +1,19 @@
 var express = require('express');
+const multer = require('multer');
 const { Sequelize } = require('sequelize');
 const sequelize = new Sequelize('pzaw', 'root', '', {
     host: 'localhost',
     dialect: 'mariadb'
 });
 var model = require("../models/init-models")(sequelize);
+
+exports.getPicture = (req, res) => {
+    model.pictures.findByPk(req.params.ID).then(succ => {
+        res.sendFile(process.env.IMAGES_PATH + "\\" + req.params.ID);
+    }).catch(err=>{
+        res.status(422).json({"error":err});
+    })
+}
 
 exports.getById = (req, res, next) => {
     model.pictures.findByPk(req.params.ID).then(succ => {
@@ -15,19 +24,27 @@ exports.getById = (req, res, next) => {
 }
 
 exports.createImage = (req, res, next) => {
-    model.pictures.create({Name: req.body.Name, CreationDate: req.body.CreationDate, AlbumID: req.body.AlbumId, Resolution: req.body.Resolution, Size: req.body.Size, Extension: req.body.Extension, CameraInfo: req.body.CameraInfo}).then(succ => {
-        generateTags(req.body.Tags).then(succ3 => {
-            model.tags.bulkCreate(succ3.map(id => {return {TagID: id, PictureID: succ.PictureID}})).then(succ4 => {
-                res.json(succ)
+    let picture = model.pictures.build({Name: req.body.Name, CreationDate: req.body.CreationDate, AlbumID: req.body.AlbumId, Resolution: req.body.Resolution, Size: req.body.Size, Extension: req.body.Extension, CameraInfo: req.body.CameraInfo})
+    multer({ 
+        storage: multer.diskStorage({ 
+            destination: process.env.IMAGES_PATH,
+            filename: (req, file, cb) => { cb(null, picture.PictureID) } 
+        }) 
+    }).single("file")(req, res, (err) => {
+        picture.save().then(succ => {
+            generateTags(req.body.Tags).then(succ3 => {
+                model.tags.bulkCreate(succ3.map(id => {return {TagID: id, PictureID: succ.PictureID}})).then(succ4 => {
+                    res.json(succ)
+                }).catch(err=>{
+                    res.status(422).json({"error": err});
+                })
             }).catch(err=>{
                 res.status(422).json({"error": err});
             })
         }).catch(err=>{
             res.status(422).json({"error": err});
         })
-    }).catch(err=>{
-        res.status(422).json({"error": err});
-    })
+    });
 }
 
 exports.updateImage = (req, res, next) => {

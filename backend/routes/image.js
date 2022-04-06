@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var service = require("../services/image");
 
+router.get("/picture/:ID", service.getPicture)
 router.get("/:ID", service.getById);
 router.post("/", service.createImage);
 router.put("/:ID", service.updateImage);
