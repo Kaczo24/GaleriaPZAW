@@ -81,7 +81,7 @@ exports.deleteImage = (req, res, next) => {
 }
 
 exports.getComment = (req, res, next) => {
-    model.comments.findAll({where: { PictureID: req.params.ID }, limit: req.query.size, offset: req.query.offset}).then(succ => {
+    model.comments.findAll({where: { PictureID: req.params.ID }, limit: req.query.size?+req.query.size:undefined, offset: req.query.offset?+req.query.offset:undefined}).then(succ => {
         res.json(succ);
     }).catch(err=>{
         res.status(422).json({"error":err});

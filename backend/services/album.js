@@ -7,7 +7,7 @@ const sequelize = new Sequelize('pzaw', 'root', '', {
 var model = require("../models/init-models")(sequelize);
 
 exports.getAll = (req, res, next) => {
-    model.albums.findAll({limit: req.query.size, offset: req.query.offset}).then(succ => {
+    model.albums.findAll({limit: req.query.size?+req.query.size:undefined, offset: req.query.offset?+req.query.offset:undefined}).then(succ => {
         res.json(succ);
     }).catch(err=>{
         res.status(422).json({"error":err});
@@ -23,7 +23,7 @@ exports.getById = (req, res, next) => {
 }
 
 exports.getImages = (req, res, next) => {
-    model.pictures.findAll({ where: {AlbumId: req.params.ID}, limit: req.query.size, offset: req.query.offset}).then(succ => {
+    model.pictures.findAll({ where: {AlbumId: req.params.ID}, limit: req.query.size?+req.query.size:undefined, offset: req.query.offset?+req.query.offset:undefined}).then(succ => {
         res.json(succ);
     }).catch(err=>{
         res.status(422).json({"error":err});
