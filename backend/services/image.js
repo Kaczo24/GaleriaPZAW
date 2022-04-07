@@ -24,13 +24,14 @@ exports.getById = (req, res, next) => {
 }
 
 exports.createImage = (req, res, next) => {
-    let picture = model.pictures.build({Name: req.body.Name, CreationDate: req.body.CreationDate, AlbumID: req.body.AlbumId, Resolution: req.body.Resolution, Size: req.body.Size, Extension: req.body.Extension, CameraInfo: req.body.CameraInfo})
+    let picture = model.pictures.build({PictureID: +((Math.random()+"").substr(10))});
     multer({ 
         storage: multer.diskStorage({ 
-            destination: process.env.IMAGES_PATH,
-            filename: (req, file, cb) => { cb(null, picture.PictureID) } 
+            destination: (req, file, cb) => { cb(null, process.env.IMAGES_PATH) },
+            filename: (req, file, cb) => { cb(null, picture.PictureID+"") } 
         }) 
     }).single("file")(req, res, (err) => {
+        Object.assign(picture, {Name: req.body.Name, CreationDate: req.body.CreationDate, AlbumID: req.body.AlbumId, Resolution: req.body.Resolution, Size: req.body.Size, Extention: req.body.Extension, CameraInfo: req.body.CameraInfo});
         picture.save().then(succ => {
             generateTags(req.body.Tags).then(succ3 => {
                 model.tags.bulkCreate(succ3.map(id => {return {TagID: id, PictureID: succ.PictureID}})).then(succ4 => {
@@ -48,7 +49,7 @@ exports.createImage = (req, res, next) => {
 }
 
 exports.updateImage = (req, res, next) => {
-    model.pictures.update({Name: req.body.Name, CreationDate: req.body.CreationDate, AlbumID: req.body.AlbumId, Resolution: req.body.Resolution, Size: req.body.Size, Extension: req.body.Extension, CameraInfo: req.body.CameraInfo}, { where: { PictureID: req.params.ID } }).then(succ => {
+    model.pictures.update({Name: req.body.Name, CreationDate: req.body.CreationDate, AlbumID: req.body.AlbumId, Resolution: req.body.Resolution, Size: req.body.Size, Extention: req.body.Extension, CameraInfo: req.body.CameraInfo}, { where: { PictureID: req.params.ID } }).then(succ => {
         model.tag_picture.destroy({ where: { PictureID: req.params.ID } }).then(succ2 => {
             generateTags(req.body.Tags).then(succ3 => {
                 model.tags.bulkCreate(succ3.map(id => {return {TagID: id, PictureID: req.params.ID}})).then(succ4 => {
