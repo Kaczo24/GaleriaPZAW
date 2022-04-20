@@ -15,7 +15,7 @@ exports.getById = (req, res, next) => {
 }
 
 exports.createComment = (req, res, next) => {
-    model.comments.create({Author: req.body.Author, CreateDate: req.body.CreationDate, Content: req.body.Content, PictureID: req.body.PictureId}).then(succ => {
+    model.comments.create({Author: req.body.Author, CreateDate: new Date().toISOString(), Content: req.body.Content, PictureID: req.body.PictureId}).then(succ => {
         res.json(succ);
     }).catch(err=>{
         res.status(422).json({"error": err});
@@ -23,7 +23,7 @@ exports.createComment = (req, res, next) => {
 }
 
 exports.updateComment = (req, res, next) => {
-    model.comments.update({Author: req.body.Author, CreateDate: req.body.CreationDate, Content: req.body.Content, PictureID: req.body.PictureId}, { where: { CommentID: req.params.ID } }).then(succ => {
+    model.comments.update({Author: req.body.Author, Content: req.body.Content, PictureID: req.body.PictureId}, { where: { CommentID: req.params.ID } }).then(succ => {
         res.json(succ);
     }).catch(err=>{
         res.status(422).json({"error": err});

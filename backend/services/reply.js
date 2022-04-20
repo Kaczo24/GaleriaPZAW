@@ -15,7 +15,7 @@ exports.getById = (req, res, next) => {
 }
 
 exports.createReply = (req, res, next) => {
-    model.replies.create({Author: req.body.Author, CreateDate: req.body.CreationDate, Content: req.body.Content, PictureID: req.body.PictureId}).then(succ => {
+    model.replies.create({Author: req.body.Author, CreateDate: new Date().toISOString(), Content: req.body.Content, PictureID: req.body.PictureId}).then(succ => {
         res.json(succ);
     }).catch(err=>{
         res.status(422).json({"error": err});
@@ -23,7 +23,7 @@ exports.createReply = (req, res, next) => {
 }
 
 exports.updateReply = (req, res, next) => {
-    model.replies.update({Author: req.body.Author, CreateDate: req.body.CreationDate, Content: req.body.Content, PictureID: req.body.PictureId}, { where: { ReplyID: req.params.ID } }).then(succ => {
+    model.replies.update({Author: req.body.Author, Content: req.body.Content, PictureID: req.body.PictureId}, { where: { ReplyID: req.params.ID } }).then(succ => {
         res.json(succ);
     }).catch(err=>{
         res.status(422).json({"error": err});

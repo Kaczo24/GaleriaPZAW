@@ -31,7 +31,7 @@ exports.getImages = (req, res, next) => {
 }
 
 exports.createAlbum = (req, res, next) => {
-    model.albums.create({Name: req.body.Name, CreationDate: req.body.CreationDate}).then(succ => {
+    model.albums.create({Name: req.body.Name, CreationDate: new Date().toISOString()}).then(succ => {
         res.json(succ);
     }).catch(err=>{
         res.status(422).json({"error": err});
@@ -39,7 +39,7 @@ exports.createAlbum = (req, res, next) => {
 }
 
 exports.updateAlbum = (req, res, next) => {
-    model.albums.update({Name: req.body.Name, CreationDate: req.body.CreationDate}, { where: { AlbumID: req.params.ID } }).then(succ => {
+    model.albums.update({Name: req.body.Name}, { where: { AlbumID: req.params.ID } }).then(succ => {
         res.json(succ);
     }).catch(err=>{
         res.status(422).json({"error": err});

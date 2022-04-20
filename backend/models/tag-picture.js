@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('tag-picture', {
+  let out = sequelize.define('tag-picture', {
     TagID: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -38,4 +38,6 @@ module.exports = function(sequelize, DataTypes) {
       },
     ]
   });
+  out.removeAttribute('id')
+  return out;
 };

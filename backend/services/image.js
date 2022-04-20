@@ -31,10 +31,10 @@ exports.createImage = (req, res, next) => {
             filename: (req, file, cb) => { cb(null, picture.PictureID+"") } 
         }) 
     }).single("file")(req, res, (err) => {
-        Object.assign(picture, {Name: req.body.Name, CreationDate: req.body.CreationDate, AlbumID: req.body.AlbumId, Resolution: req.body.Resolution, Size: req.body.Size, Extention: req.body.Extension, CameraInfo: req.body.CameraInfo});
+        Object.assign(picture, {Name: req.body.Name, CreationDate: new Date().toISOString(), AlbumID: req.body.AlbumId, Resolution: req.body.Resolution, Size: req.body.Size, Extention: req.body.Extension, CameraInfo: req.body.CameraInfo});
         picture.save().then(succ => {
-            generateTags(req.body.Tags).then(succ3 => {
-                model.tags.bulkCreate(succ3.map(id => {return {TagID: id, PictureID: succ.PictureID}})).then(succ4 => {
+            generateTags(req.body.Tags.split(",").map(x=>x.trim())).then(succ3 => {
+                model.tag_picture.bulkCreate(succ3.map(id => {return {TagID: id, PictureID: succ.PictureID}})).then(succ4 => {
                     res.json(succ)
                 }).catch(err=>{
                     res.status(422).json({"error": err});
@@ -49,10 +49,10 @@ exports.createImage = (req, res, next) => {
 }
 
 exports.updateImage = (req, res, next) => {
-    model.pictures.update({Name: req.body.Name, CreationDate: req.body.CreationDate, AlbumID: req.body.AlbumId, Resolution: req.body.Resolution, Size: req.body.Size, Extention: req.body.Extension, CameraInfo: req.body.CameraInfo}, { where: { PictureID: req.params.ID } }).then(succ => {
+    model.pictures.update({Name: req.body.Name, AlbumID: req.body.AlbumId, Resolution: req.body.Resolution, Size: req.body.Size, Extention: req.body.Extension, CameraInfo: req.body.CameraInfo}, { where: { PictureID: req.params.ID } }).then(succ => {
         model.tag_picture.destroy({ where: { PictureID: req.params.ID } }).then(succ2 => {
-            generateTags(req.body.Tags).then(succ3 => {
-                model.tags.bulkCreate(succ3.map(id => {return {TagID: id, PictureID: req.params.ID}})).then(succ4 => {
+            generateTags(req.body.Tags.split(",").map(x=>x.trim())).then(succ3 => {
+                model.tag_picture.bulkCreate(succ3.map(id => {return {TagID: id, PictureID: req.params.ID}})).then(succ4 => {
                     res.json(succ)
                 }).catch(err=>{
                     res.status(422).json({"error": err});
@@ -91,7 +91,7 @@ exports.getComment = (req, res, next) => {
 async function generateTags(tags) {
     let out = [];
     for(let tag of tags){
-        out.push((await model.tags.findOrCreate({where: {Name: tag}, defaults: {Name: tag}}))[1].TagID)
+        out.push((await model.tags.findOrCreate({where: {Name: tag}, defaults: {Name: tag}}))[0].TagID)
     }
     return out;
 }
