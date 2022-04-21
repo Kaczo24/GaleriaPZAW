@@ -29,6 +29,14 @@ exports.updateComment = (req, res, next) => {
         res.status(422).json({"error": err});
     })}
 
+exports.getReply = (req, res, next) => {
+    model.replies.findAll({where: { CommentID: req.params.ID }, limit: req.query.size?+req.query.size:undefined, offset: req.query.offset?+req.query.offset:undefined}).then(succ => {
+        res.json(succ);
+    }).catch(err=>{
+        res.status(422).json({"error":err});
+    })
+}
+
 exports.deleteComment = (req, res, next) => {
     model.comments.destroy({ where: { CommentID: req.params.ID } }).then(succ => {
         res.json(succ);
